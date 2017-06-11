@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Todo</title>
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <style type="text/css">
+  body {
+    width: 99%;
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  table,
+  tr,
+  th,
+  td {
+    border: 1px solid gray;
+  }
+  
+  table {
+    //margin: 50px;
+    //font-size: 2em;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+  }
+  
+  .main tr th {
+    width: 25%;
+    font-size: 1.5em;
+    //margin: 10px;
+    background: white;
+  }
+  
+  .main tr {
+    //  margin: 10px;
+    background: #9f8ee4
+  }
+  
+  .main tr td {
+    width: 25%;
+    font-size: 1em;
+    text-align: center;
+    padding: 5px;
+  }
+  
+  input {
+    width: 80%;
+    align-self: center;
+    padding: 5px;
+  }
+  
+  .below {
+    margin: auto;
+    margin-top: 2px;
+  }
+  
+  #add,
+  #save {
+    margin-top: 30px;
+  }
+  
+  .show {
+    display: block;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
+  .filter-divs {
+    border: 1px solid green;
+    padding: 5px 5px;
+    margin: 5px;
+    background: #c5bfbf;
+    display: inline-block;
+  }
+  
+  .filter-divs:hover {
+    background: gray;
+    cursor: pointer;
+    display: inline-block;
+  }
+  
+  .active {
+    background: green;
+  }
+  </style>
+</head>
+
+<body>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="index.js"></script>
+  <h1>TODO</h1>
+  <div class="filter">
+    <div id="bysno" class="filter-divs active">S.NO</div>
+    <div id="bydate" class="filter-divs">Date</div>
+  </div>
+  <div id="#main" class="main">
+    <table>
+      <tbody>
+        <tr>
+          <th>SNo.</th>
+          <th>Title</th>
+          <th>Content</th>
+          <th>Deadline</th>
+        </tr>
+      </tbody>
+    </table>
+    <button id="add" class="show below">ADD TODO</button>
+    <button id="save" class="hide below">Save</button>
+    <button id="clear" class="show below">Clear All</button>
+  </div>
+</body>
+
+</html>
