@@ -28,7 +28,7 @@ var auto_refresh = function () {
   return setInterval(
 
     function () {
-      todo.forEach(function (val, i) {
+     todo.forEach(function (val, i) {
         var cur_date = (new Date());
         var dt = new Date(val.date);
         if (dt.getTime() <= cur_date.getTime()) {
@@ -36,7 +36,7 @@ var auto_refresh = function () {
             todo[i].past_status = true;
             pending.push(todo[i]);
             alert('You have 1 more pending request now. Total ' + pending.length + ' requests are pending now');
-            giveColor(todo[i]);
+            giveColor(todo[i], i);
           }
         } else {
           if (pending.indexOf(val) >= 0) {
@@ -53,9 +53,9 @@ var auto_refresh = function () {
  * This function changes the color of the row which has a past todo data.
  * @param  {Object} val  It is the row object of which we are going to change the color
  */
-function giveColor(val) {
-  var tr = $('.main tbody').find('tr:eq(' + (val.id + 1) + ')');
-  $('.main tbody').find('tr:eq(' + (val.id + 1) + ')').css({ 'background': '#f37171' });
+function giveColor(val, i) {
+  var tr = $('.main tbody').find('tr:eq(' + (i + 1) + ')');
+  $('.main tbody').find('tr:eq(' + (i + 1) + ')').css({ 'background': '#f37171' });
   $(tr).find('td:eq(4)').find('#edit').html('Update');
   $(tr).find('td:eq(4)').find('#delete').html('Discard');
 }
@@ -65,6 +65,7 @@ function giveColor(val) {
  * @param  {Function} callback It takes a function as parameter, ie, autorefresh function
  */
 function checkPending(callback) {
+
   todo.forEach(function (val, i) {
     var cur_date = (new Date());
     var dt = new Date(val.date);
@@ -85,7 +86,7 @@ function checkPending(callback) {
   if (pending.length > 0) {
     alert('you have ' + pending.length + ' pending request either delete it or update it');
     pending.forEach(function (val, i) {
-      giveColor(val);
+      giveColor(val, val.id);
     });
   }
   callback();
@@ -100,15 +101,14 @@ function displayTodo(doAlert) {
   for (var i = 0; i < todo.length; i++) {
     $(".main tbody").append('<tr><td>' + (todo[i].id + 1) + '</td><td>' + todo[i].title + '</td><td>' + todo[i].content + '</td><td>' + (new Date(todo[i].date)) + '</td>' + '<td><button id="edit">edit</button><button id="delete">delete</button></td>');
     if (todo[i].past_status) {
-      giveColor(todo[i]);
+      giveColor(todo[i], i);
     }
-  }
-
-  /*
+    /*
   If doAlert is false we do not call checkPending function
    */
-  if (i === todo.length - 1 && doAlert) {
-    checkPending(auto_refresh);
+    if (i === (todo.length - 1) && doAlert) {
+      checkPending(auto_refresh);
+    }
   }
 }
 
@@ -120,6 +120,7 @@ $(document).ready(function () {
   console.log(todo);
   if (todo === null || typeof (todo) === 'string') {
     todo = [];
+
   } else if (todo.length > 0) {
     //if anything is there in todo we show it in each td
     //we sort the data on the basis of id, ie, by S.NO. 
@@ -134,6 +135,7 @@ $(document).ready(function () {
     /*
       Call for displaying the list. true is passed so that we can call the checkPending function in displayTodo function
      */
+
     displayTodo(true);
   }
 
@@ -152,11 +154,40 @@ $(document).ready(function () {
     var content = $('.main tbody tr:last #content-input').val();
     var date = $('.main tbody tr:last #date-input').val();
     var time = $('.main tbody tr:last #time-input').val();
-    var timeArray = time.split(":");
-    var hour = parseInt(timeArray[0]);
-    var min = parseInt(timeArray[1]);
-    var timeString = hour + ':' + min + ':00';
-    date = (date + ' ' + timeString);
+
+    if (!date) {
+      date = new Date();
+      var month = (date.getMonth() + 1).toString();
+      var dt = (date.getDate() + 1).toString();
+      if (month.length === 1) {
+        month = '0' + (date.getMonth() + 1);
+      }
+      if (dt.length === 1) {
+        dt = '0' + dt;
+      }
+      date = date.getFullYear() + '-' + month + '-' + dt;
+    }
+
+    if (!time) {
+      var dummyDate = new Date();
+      var hr = dummyDate.getHours().toString(),
+        min = dummyDate.getMinutes().toString();
+      if (hr.length === 1) {
+        hr = '0' + hr;
+      }
+      if (min.length === 1) {
+        min = '0' + min;
+      }
+      time = hr + ':' + min;
+    } else {
+      var timeArray = time.split(":");
+      var hour = parseInt(timeArray[0]);
+      var min = parseInt(timeArray[1]);
+      var timeString = hour + ':' + min + ':00';
+      time = timeString;
+    }
+
+    date = (date + ' ' + time);
 
     if (title && content && date) {
       todo.push({
@@ -182,8 +213,7 @@ $(document).ready(function () {
     if (todo.length === 1) {
       auto_refresh();
     }
-
-  })
+  });
 
   $(".main tbody").on('click', 'tr #delete', function (e) {
     // we delete the todo from both html and localstorage
